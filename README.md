@@ -1,3 +1,17 @@
+Makes it easier to validate JSON request bodies.
+
+Allows you to custom hooks for when the request body is missing, when it has missing fields, or when it has fields with incorrect types.
+
+😃
+Optional fields supported.
+
+😥
+"Union type" fields not yet supported.
+Nested objects not yet supported.
+
+## Example
+
+```ts
 import createTypedHandler from "./typedHandler";
 
 const typedHandler = createTypedHandler({
@@ -29,3 +43,4 @@ const createUserMiddlware = typedHandler<CreateUserBody>({
 }, (req, res) => {
     // middleware that is called after body validation
 })
+```

@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express'
+import { RequestHandler, Request, Response, NextFunction } from 'express'
 import * as core from "express-serve-static-core"
 
 const isType = (val: any, type: string): boolean => {
@@ -59,8 +59,8 @@ type TypedHandler<T extends Record<string, any>> = RequestHandler<core.ParamsDic
 
 type TypedHandlerHooks = {
     onMissingBody: RequestHandler
-    onMissingFields: RequestHandler
-    onMismatchedTypes: RequestHandler
+    onMissingFields: (keys: string[], req: Request, res: Response, next: NextFunction) => void
+    onMismatchedTypes: (keys: [string, string][], req: Request, res: Response, next: NextFunction) => void
 }
 
 
@@ -83,8 +83,8 @@ const createTypedHandler = (hooks: TypedHandlerHooks): TypedHandlerFn => {
                 }
             })
             
-            if (missingFields.length > 0) return hooks.onMissingFields(req, res, next);
-            if (mismatchedTypes.length > 0) return hooks.onMismatchedTypes(req, res, next);
+            if (missingFields.length > 0) return hooks.onMissingFields(missingFields, req, res, next);
+            if (mismatchedTypes.length > 0) return hooks.onMismatchedTypes(mismatchedTypes, req, res, next);
     
             then(req, res, next)
         }
